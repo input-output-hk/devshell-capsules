@@ -14,6 +14,7 @@
     metaler = map (withCategory "metal");
     integrator = map (withCategory "integrations");
     tooler = map (withCategory "tools");
+    baser = map (withCategory "baser");
 
     _file = "github:input-outupt-hk/devshell-capsules";
   in {
@@ -24,6 +25,9 @@
       nixpkgs' = nixpkgs.${pkgs.system};
       iogo = inputs.iogo.defaultPackage.${pkgs.system};
     in {
+      commands = baser [
+        {package = nixpkgs'.arion;}
+      ];
       packages = with nixpkgs'; [
         iogo
         treefmt
@@ -89,11 +93,6 @@
     in {
       inherit _file;
       commands = metaler [
-        {
-          package = nixpkgs'.vault-bin;
-          name = "vault";
-        }
-        {package = nixpkgs'.consul;}
         {package = bitte;}
         {package = ragenix;}
         {
@@ -126,6 +125,7 @@
         {
           package = nixpkgs'.bitwarden-cli;
           name = "bw";
+          help = "cli to interact with vaultwarden";
         }
       ];
     };
@@ -146,7 +146,10 @@
         }
         {package = nixpkgs'.curlie;}
         {package = nixpkgs'.pwgen;}
-        {package = nixpkgs'.difftastic;}
+        {
+          package = nixpkgs'.difftastic;
+          name = "difft";
+        }
       ];
     };
 
