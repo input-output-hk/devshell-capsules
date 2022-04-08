@@ -123,7 +123,7 @@ fi
 [ -z "${VERBOSE:-}" ] || echo "TASK is: $TASK"
 
 if [ -z "${ALLOC:-}" ]; then
-  mapfile -t SHOW_ALLOCS < <(curl -s -H "X-Nomad-Token: $NOMAD_TOKEN" "$NOMAD_ADDR/v1/job/$JOB/allocations?namespace=$NOMAD_NAMESPACE" | jq -r "map(select(.TaskStates | keys | select(index(\"$TASK\")))) | map(select(.TaskStates.vector.State == \"running\")) | map(.ID) | unique | sort[]")
+  mapfile -t SHOW_ALLOCS < <(curl -s -H "X-Nomad-Token: $NOMAD_TOKEN" "$NOMAD_ADDR/v1/job/$JOB/allocations?namespace=$NOMAD_NAMESPACE" | jq -r "map(select(.TaskStates | keys | select(index(\"$TASK\")))) | map(select(.TaskStates.\"$TASK\".State == \"running\")) | map(.ID) | unique | sort[]")
   if [ "${SHOW_TAGS:-}" == "true" ]; then
     SERVICE_CATALOG="$(curl -s -H "X-Consul-Token: $CONSUL_HTTP_TOKEN" "$CONSUL_HTTP_ADDR/v1/catalog/services")"
     COUNT="1"
