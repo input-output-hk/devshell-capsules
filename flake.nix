@@ -29,7 +29,6 @@
         {package = nixpkgs'.arion;}
       ];
       packages = with nixpkgs'; [
-        iogo
         treefmt
         alejandra
         nodePackages.prettier
@@ -39,6 +38,9 @@
       ];
       devshell.startup.nodejs-setuphook = nixpkgs'.lib.stringsWithDeps.noDepEntry ''
         export NODE_PATH=${nixpkgs'.nodePackages.prettier-plugin-toml}/lib/node_modules:$NODE_PATH
+      '';
+      devshell.startup.iogo-login = nixpkgs'.lib.stringsWithDeps.noDepEntry ''
+        eval "$(${iogo}/bin/iogo login)"
       '';
     };
 
