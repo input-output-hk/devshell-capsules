@@ -14,7 +14,7 @@
     metaler = map (withCategory "metal");
     integrator = map (withCategory "integrations");
     tooler = map (withCategory "tools");
-    baser = map (withCategory "baser");
+    baser = map (withCategory "base");
 
     _file = "github:input-outupt-hk/devshell-capsules";
   in {
