@@ -1,9 +1,9 @@
 {
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     iogo.url = "github:input-output-hk/bitte-iogo";
     ragenix.url = "github:input-output-hk/ragenix";
-    bitte.url = "github:input-output-hk/bitte-cli";
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    bitte.url = "github:input-output-hk/bitte";
   };
 
   outputs = inputs: let
