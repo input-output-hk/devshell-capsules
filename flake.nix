@@ -35,6 +35,7 @@
         nodePackages.prettier-plugin-toml
         shfmt
         editorconfig-checker
+        pwgen
       ];
       devshell.startup.nodejs-setuphook = nixpkgs'.lib.stringsWithDeps.noDepEntry ''
         export NODE_PATH=${nixpkgs'.nodePackages.prettier-plugin-toml}/lib/node_modules:$NODE_PATH
@@ -153,7 +154,6 @@
           name = "fx";
         }
         {package = nixpkgs'.curlie;}
-        {package = nixpkgs'.pwgen;}
         {
           package = nixpkgs'.difftastic;
           name = "difft";
