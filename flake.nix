@@ -69,6 +69,11 @@
         {package = nixpkgs'.consul;}
         {package = nixpkgs'.nomad;}
         {package = nixpkgs'.sops;}
+        {
+          name = "htdigest";
+          command = ''${nixpkgs'.apacheHttpd}/bin/htdigest "$@"'';
+          help = "create new http authentication tokens";
+        }
         {package = nixpkgs'.skopeo;}
         {
           package = nixpkgs'.writeShellApplication {
