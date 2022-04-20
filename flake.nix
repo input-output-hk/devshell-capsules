@@ -69,6 +69,7 @@
         {package = nixpkgs'.consul;}
         {package = nixpkgs'.nomad;}
         {package = nixpkgs'.sops;}
+        {package = nixpkgs'.skopeo;}
         {
           package = nixpkgs'.writeShellApplication {
             name = "nomad-exec";
