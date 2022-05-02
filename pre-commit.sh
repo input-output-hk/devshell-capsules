@@ -11,7 +11,7 @@ diff="git diff-index --name-only --cached $against --diff-filter d"
 all_files=($($diff))
 
 # Format the entire tree.
-treefmt
+treefmt "${all_files[@]}"
 
 # check editorconfig
 editorconfig-checker -- "${all_files[@]}"
