@@ -28,7 +28,7 @@ while getopts 'c:u:n:j:t:a:e:psvh' c; do
     echo "  -j  JOB to select the allocation from"
     echo "  -t  TASK to select the allocation from"
     echo "  -a  ALLOCATION for exec"
-    echo '  -e  CMD for exec. Default: "/bin/bash"'
+    echo '  -e  CMD for exec. Default: "/bin/debug"'
     echo "  -p  prompt for some defaults if not declared as options (NOMAD_NAMESPACE, CMD)"
     echo "  -s  show consul service allocation associated addresses and tags (requires services to be tagged with the NOMAD_ALLOC_ID)"
     echo "  -v  verbose"
@@ -173,13 +173,13 @@ fi
 [ -z "${VERBOSE:-}" ] || echo "ALLOC is: $ALLOC"
 
 if [ "${PROMPT:-}" == "true" ] && [ -z "${CMD:-}" ]; then
-  echo -n "Type in the CMD to exec (enter for default: /bin/bash): "
+  echo -n "Type in the CMD to exec (enter for default: /bin/debug): "
   read -r CMD
   if [ -z "${CMD:-}" ]; then
-    CMD="/bin/bash"
+    CMD="/bin/debug"
   fi
 elif [ -z "${CMD:-}" ]; then
-  CMD="/bin/bash"
+  CMD="/bin/debug"
 fi
 [ -z "${VERBOSE:-}" ] || echo "CMD is: $CMD"
 
