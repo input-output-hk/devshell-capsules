@@ -128,6 +128,12 @@
       inherit _file;
       commands = integrator [
         {
+          package = nixpkgs'.reuse;
+        }
+        {
+          package = nixpkgs'.gh;
+        }
+        {
           package = nixpkgs'.go-jira;
           name = "jira";
         }
