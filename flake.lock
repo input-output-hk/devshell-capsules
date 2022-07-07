@@ -437,15 +437,16 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1652212694,
-        "narHash": "sha256-baAY5wKzccNsm7OCEYuySrkXRmlshokCHQjs4EdYShM=",
+        "lastModified": 1657235361,
+        "narHash": "sha256-20TyGT5J1s9JswUmW0eis57lHxGH6ozxEoBL5W5WAQs=",
         "owner": "input-output-hk",
         "repo": "bitte-iogo",
-        "rev": "e465975aa368b2d919e865f71eeed02828e55471",
+        "rev": "bb3b9491fc1b054244b5c202885eeb2950ad40f3",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "fast-login",
         "repo": "bitte-iogo",
         "type": "github"
       }
