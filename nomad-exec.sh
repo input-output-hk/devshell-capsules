@@ -3,7 +3,7 @@ set -euo pipefail
 
 PACKAGE="nomad-exec"
 
-while getopts 'c:u:n:j:t:a:e:psvh' c; do
+while getopts 'c:u:n:j:t:a:e:S:psvh' c; do
   case "$c" in
   c) CONSUL_HTTP_ADDR="$OPTARG" ;;
   u) NOMAD_ADDR="$OPTARG" ;;
@@ -17,10 +17,11 @@ while getopts 'c:u:n:j:t:a:e:psvh' c; do
   e) CMD="$OPTARG" ;;
   p) PROMPT="true" ;;
   s) SHOW_TAGS="true" ;;
+  S) CONSUL_TAG="$OPTARG" ;;
   v) VERBOSE="true" ;;
   *)
     echo "This command makes exec into a nomad allocation easier."
-    echo "usage: $PACKAGE [-c CONSUL_HTTP_ADDR] [-u NOMAD_ADDR] [-n NOMAD_NAMESPACE] [-j JOB] [-t TASK] [-a ALLOC] [-e CMD] [-p] [-s] [-v] [-h]"
+    echo "usage: $PACKAGE [-c CONSUL_HTTP_ADDR] [-u NOMAD_ADDR] [-n NOMAD_NAMESPACE] [-j JOB] [-t TASK] [-a ALLOC] [-e CMD] [-S CONSUL_TAG] [-s] [-p] [-v] [-h]"
     echo
     echo "  -c  CONSUL_HTTP_ADDR for consul upstream server.  Default: env CONSUL_HTTP_ADDR (${CONSUL_HTTP_ADDR:-"UNSET"})"
     echo "  -u  NOMAD_ADDR for nomad upstream server.  Default: env NOMAD_ADDR (${NOMAD_ADDR:-"UNSET"})"
@@ -29,8 +30,9 @@ while getopts 'c:u:n:j:t:a:e:psvh' c; do
     echo "  -t  TASK to select the allocation from"
     echo "  -a  ALLOCATION for exec"
     echo '  -e  CMD for exec. Default: "/bin/debug"'
-    echo "  -p  prompt for some defaults if not declared as options (NOMAD_NAMESPACE, CMD)"
+    echo "  -S  CONSUL_TAG to select the first matching allocation from (implies '-s')"
     echo "  -s  show consul service allocation associated addresses and tags (requires services to be tagged with the NOMAD_ALLOC_ID)"
+    echo "  -p  prompt for some defaults if not declared as options (NOMAD_NAMESPACE, CMD)"
     echo "  -v  verbose"
     echo "  -h  help"
     echo
@@ -124,7 +126,7 @@ fi
 
 if [ -z "${ALLOC:-}" ]; then
   mapfile -t SHOW_ALLOCS < <(curl -s -H "X-Nomad-Token: $NOMAD_TOKEN" "$NOMAD_ADDR/v1/job/$JOB/allocations?namespace=$NOMAD_NAMESPACE" | jq -r "map(select(.TaskStates | keys | select(index(\"$TASK\")))) | map(select(.TaskStates.\"$TASK\".State == \"running\")) | map(.ID) | unique | sort[]")
-  if [ "${SHOW_TAGS:-}" == "true" ]; then
+  if [ "${SHOW_TAGS:-}" == "true" ] || [ -n "${CONSUL_TAG:-}" ]; then
     SERVICE_CATALOG="$(curl -s -H "X-Consul-Token: $CONSUL_HTTP_TOKEN" "$CONSUL_HTTP_ADDR/v1/catalog/services")"
     COUNT="1"
     CACHE_SERVICE=()
@@ -158,17 +160,27 @@ if [ -z "${ALLOC:-}" ]; then
         TAGS="$(jq -r "map(select(.ServiceTags[] == \"$SHOW_ALLOC\"))[] | .ServiceTags | del(.[] | select(. == \"$SHOW_ALLOC\")) | unique | sort[]" <<<"$SERVICE_JSON")"
         for TAG in $TAGS; do
           echo "    $SERVICE:$TAG"
+          if [ "${CONSUL_TAG:-}" == "$TAG" ]; then
+            ALLOC="$SHOW_ALLOC"
+            break 3
+          fi
         done
         echo
       done
       echo
     done
   fi
-  choose \
-    "allocation" \
-    "nostrip" \
-    "for SHOW_ALLOC in ${SHOW_ALLOCS[*]}; do echo \$SHOW_ALLOC; done"
-  ALLOC="$CHOICE"
+
+  if [ -z "${ALLOC:-}" ]; then
+    if [ -n "${CONSUL_TAG:-}" ]; then
+      echo "warning: '$CONSUL_TAG' does not match any specified tags, falling back to alloc picker"
+    fi
+    choose \
+      "allocation" \
+      "nostrip" \
+      "for SHOW_ALLOC in ${SHOW_ALLOCS[*]}; do echo \$SHOW_ALLOC; done"
+    ALLOC="$CHOICE"
+  fi
 fi
 [ -z "${VERBOSE:-}" ] || echo "ALLOC is: $ALLOC"
 
