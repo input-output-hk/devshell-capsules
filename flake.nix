@@ -48,11 +48,22 @@
     # --------------------------------------
     # Hooks: use the default company-wide git hooks
     # --------------------------------------
-    hooks = {extraModulesPath, ...}: {
+    hooks = {
+      extraModulesPath,
+      pkgs,
+      ...
+    }: let
+      nixpkgs' = nixpkgs.${pkgs.system};
+    in {
       inherit _file;
       imports = ["${extraModulesPath}/git/hooks.nix"];
       git.hooks.enable = true;
       git.hooks.pre-commit.text = builtins.readFile ./pre-commit.sh;
+      git.hooks.commit-msg.text = builtins.readFile ./commit-msg.sh;
+      packages = with nixpkgs'; [
+        conform
+        editorconfig-checker
+      ];
     };
 
     # --------------------------------------
