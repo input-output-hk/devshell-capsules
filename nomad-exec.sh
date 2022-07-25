@@ -161,6 +161,10 @@ if [ -z "${ALLOC:-}" ]; then
         for TAG in $TAGS; do
           echo "    $SERVICE:$TAG"
           if [ "${CONSUL_TAG:-}" == "$TAG" ]; then
+            echo
+            echo "Found requested CONSUL_TAG: \"$CONSUL_TAG\""
+            echo "Execing to CONSUL_TAG associated Nomad allocation: $SHOW_ALLOC"
+            echo
             ALLOC="$SHOW_ALLOC"
             break 3
           fi
@@ -173,7 +177,7 @@ if [ -z "${ALLOC:-}" ]; then
 
   if [ -z "${ALLOC:-}" ]; then
     if [ -n "${CONSUL_TAG:-}" ]; then
-      echo "warning: '$CONSUL_TAG' does not match any specified tags, falling back to alloc picker"
+      echo "Warning: \"$CONSUL_TAG\" does not match any NOMAD_ALLOC_ID associated Consul service tags, falling back to alloc picker"
     fi
     choose \
       "allocation" \
