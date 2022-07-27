@@ -15,8 +15,8 @@ function show_help() {
   echo 'options:'
   echo '-h, --help                show help'
   echo '-c, --commit BITTE_COMMIT diffs against BITTE_COMMIT'
-  echo '-n, --node NODE           add nodes to diff (default: core-1)'
-  echo '-t, --terraform TFTARGET  add terraform targets to diff (default: hydrate-cluster)'
+  echo '-n, --node NODE           add nodes to diff'
+  echo '-t, --terraform TFTARGET  add terraform targets to diff'
   echo ' '
   echo 'BITTE_COMMIT a commit rev from the bitte repository and the future'
   echo '             right-hand side of the comparision'
@@ -28,8 +28,8 @@ function show_help() {
 test $# -eq 0 && (show_help && exit 1)
 
 BITTE_REPO="input-output-hk/bitte"
-NODES=(core-1)
-TFTARGET=(hydrate-cluster)
+NODES=()
+TFTARGET=()
 
 while test $# -gt 0; do
   case "$1" in
