@@ -28,31 +28,10 @@
       commands = baser [
         {package = nixpkgs'.arion;}
       ];
-      packages = with nixpkgs'; [
-        treefmt
-        alejandra
-        nodePackages.prettier
-        nodePackages.prettier-plugin-toml
-        shfmt
-        editorconfig-checker
-        pwgen
-      ];
-      devshell.startup.nodejs-setuphook = nixpkgs'.lib.stringsWithDeps.noDepEntry ''
-        export NODE_PATH=${nixpkgs'.nodePackages.prettier-plugin-toml}/lib/node_modules:$NODE_PATH
-      '';
+      packages = with nixpkgs'; [pwgen];
       devshell.startup.iogo-login = nixpkgs'.lib.stringsWithDeps.noDepEntry ''
         eval "$(${iogo}/bin/iogo login)"
       '';
-    };
-
-    # --------------------------------------
-    # Hooks: use the default company-wide git hooks
-    # --------------------------------------
-    hooks = {extraModulesPath, ...}: {
-      inherit _file;
-      imports = ["${extraModulesPath}/git/hooks.nix"];
-      git.hooks.enable = true;
-      git.hooks.pre-commit.text = builtins.readFile ./pre-commit.sh;
     };
 
     # --------------------------------------
@@ -155,6 +134,7 @@
       commands = tooler [
         {package = nixpkgs'.jq;}
         {package = nixpkgs'.ijq;}
+        {package = nixpkgs'.icdiff;}
         {
           package = nixpkgs'.fx;
           name = "fx";
