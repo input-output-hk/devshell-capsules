@@ -5,7 +5,7 @@ includes = ["*.nix"]
 
 [formatter.prettier]
 command = "prettier"
-options = ["--plugin", "prettier-plugin-toml", "--write"]
+options = ["--write"]
 includes = [
   "*.css",
   "*.html",
@@ -17,7 +17,6 @@ includes = [
   "*.scss",
   "*.ts",
   "*.yaml",
-  "*.toml",
 ]
 
 [formatter.shell]

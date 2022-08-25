@@ -14,6 +14,7 @@
     metaler = map (withCategory "metal");
     integrator = map (withCategory "integrations");
     tooler = map (withCategory "tools");
+    formatter = map (withCategory "formatters & linters");
     baser = map (withCategory "base");
 
     _file = "github:input-outupt-hk/devshell-capsules";
@@ -144,6 +145,22 @@
           package = nixpkgs'.difftastic;
           name = "difft";
         }
+      ];
+    };
+
+    # --------------------------------------
+    # Tools: common formatting tools
+    # --------------------------------------
+    formatting = {pkgs, ...}: let
+      nixpkgs' = nixpkgs.${pkgs.system};
+    in {
+      inherit _file;
+      commands = formatter [
+        {package = nixpkgs'.treefmt;}
+        {package = nixpkgs'.prettier;}
+        {package = nixpkgs'.shfmt;}
+        {package = nixpkgs'.alejandra;}
+        {package = nixpkgs'.statix;}
       ];
     };
 
