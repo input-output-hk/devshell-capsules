@@ -30,7 +30,9 @@
       ];
       packages = with nixpkgs'; [pwgen];
       devshell.startup.iogo-login = nixpkgs'.lib.stringsWithDeps.noDepEntry ''
-        eval "$(${iogo}/bin/iogo login)"
+        if ! [[ -v BITTE_NO_LOGIN ]]; then
+          eval "$(${iogo}/bin/iogo login)"
+        fi
       '';
     };
 
