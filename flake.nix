@@ -1,13 +1,12 @@
 {
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    iogo.url = "github:input-output-hk/bitte-iogo";
-    ragenix.url = "github:input-output-hk/ragenix";
-    bitte.url = "github:input-output-hk/bitte";
-  };
-
-  outputs = inputs: let
-    nixpkgs = inputs.nixpkgs.legacyPackages;
+  outputs = {
+    self,
+    nixpkgs,
+    iogo,
+    ragenix,
+    bitte,
+  }: let
+    nixpkgs = nixpkgs.legacyPackages;
 
     withCategory = category: attrset: attrset // {inherit category;};
     clouder = map (withCategory "cloud");
@@ -23,7 +22,7 @@
     # --------------------------------------
     base = {pkgs, ...}: let
       nixpkgs' = nixpkgs.${pkgs.system};
-      iogo = inputs.iogo.defaultPackage.${pkgs.system};
+      iogo = iogo.defaultPackage.${pkgs.system};
     in {
       commands = baser [
         {package = nixpkgs'.arion;}
@@ -78,8 +77,8 @@
     # --------------------------------------
     metal = {pkgs, ...}: let
       nixpkgs' = nixpkgs.${pkgs.system};
-      bitte = inputs.bitte.packages.${pkgs.system}.bitte;
-      ragenix = inputs.ragenix.defaultPackage.${pkgs.system};
+      bitte = bitte.packages.${pkgs.system}.bitte;
+      ragenix = ragenix.defaultPackage.${pkgs.system};
     in {
       inherit _file;
       commands = metaler [
@@ -163,5 +162,18 @@
           shfmt
         ];
       };
+  };
+
+  nixConfig = {
+    flake-registry = "https://raw.githubusercontent.com/input-output-hk/flake-registry/iog/flake-registry.json";
+
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+      "https://cache.iog.io"
+    ];
+    extra-trusted-public-keys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 }
