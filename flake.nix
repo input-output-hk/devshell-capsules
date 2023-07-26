@@ -4,6 +4,9 @@
     iogo.url = "github:input-output-hk/bitte-iogo";
     ragenix.url = "github:input-output-hk/ragenix";
     bitte.url = "github:input-output-hk/bitte";
+
+    # Required nix version for current deploy-rs and bitte deploy compat
+    nix-deployer.url = "github:NixOS/nix/2.14-maintenance";
   };
 
   outputs = inputs: let
@@ -80,6 +83,7 @@
       nixpkgs' = nixpkgs.${pkgs.system};
       bitte = inputs.bitte.packages.${pkgs.system}.bitte;
       ragenix = inputs.ragenix.defaultPackage.${pkgs.system};
+      nix-deployer = inputs.nix-deployer.packages.${pkgs.system}.nix;
     in {
       inherit _file;
       commands = metaler [
@@ -88,6 +92,11 @@
         {
           package = nixpkgs'.awscli;
           name = "aws";
+        }
+        {
+          package = nix-deployer;
+          name = "nix";
+          help = "nix 2.14.X for bitte and deploy-rs deploy compatibility";
         }
         {
           package = nixpkgs'.writeShellApplication {
